@@ -1,0 +1,84 @@
+---
+title: "MWolfe_Livesession3assignment"
+author: "Michael J Wolfe"
+date: "November 25, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## GitHub Cloning
+
+mkdir \awesome-public-datasets
+chdir \awesome-public-datasets
+git clone https://github.com/caesar0301/awesome-public-datasets
+
+##Data Summary
+
+```{r 2A, echo=TRUE}
+df <- read.csv("C://awesome-public-datasets/awesome-public-datasets/Datasets/titanic.csv")
+```
+
+```{r 2B, echo=TRUE}
+library(plyr)
+sex_countDF <- count(df$Sex)
+male_count <- subset(sex_countDF$freq,sex_countDF$x=='male')
+print(male_count)
+female_count <- subset(sex_countDF$freq,sex_countDF$x=='female')
+print(female_count)
+barplot(sex_countDF$freq, beside = TRUE, col=c("red","blue"), legend=sex_countDF$x, main="Frequency of Male and Female Passengers")
+```
+
+```{r 2C, echo=TRUE}
+means_list <- lapply(df,mean,na.rm=TRUE)
+age_fare_survival_means <- c(means_list$Survived,means_list$Age,means_list$Fare)
+print(age_fare_survival_means)
+```
+## Function Building
+
+```{r 3, echo=TRUE}
+sleep_report <- function(x){
+    report_cols <- c('MedianAge', 'SelfEsteem', 'SE_SD', 'DurationRange')
+    medianAge <- median(x$Age,na.rm=TRUE)
+    minSleep <- min(x$Duration, na.rm=TRUE)
+    maxSleep <- max(x$Duration, na.rm=TRUE)
+    meanRSES <- mean(x$RSES, na.rm=TRUE)
+    sdRSES <- sd(x$RSES, na.rm=TRUE)
+    report <- data.frame(medianAge, meanRSES, sdRSES/5, maxSleep-minSleep)
+    colnames(report) <- report_cols
+    round(report)
+    return(report)
+}
+sleep_data <- read.csv("C://Users/micha/OneDrive/Desktop/SMU MSDS/Doing Data Science/Unit 3/sleep_data_01.csv")
+sleep_report(sleep_data)
+```
+## FiveThirtyEight Data
+
+```{r 4, echo=TRUE}
+library(fivethirtyeight)
+data(package="fivethirtyeight")
+df <- college_recent_grads
+vignette("fivethirtyeight", package = "fivethirtyeight")
+storyURL <- "https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/"
+colnames(df)
+dim(df)
+```
+
+```{r 5, echo=TRUE}
+colnames(df)
+ncol(df)
+major_count <- count(df, var='major_category')
+par(las=2)
+barplot(major_count$freq, beside = TRUE, col="blue", legend=major_count$x, main="Count of College Majors",horiz=TRUE)
+write.csv(major_count, "C://Users/micha/OneDrive/Desktop/SMU MSDS/Doing Data Science/Unit 3/MWolfe_Livesession3assignment.csv",row.names=FALSE)
+```
+##Codebook
+git clone https://github.com/mjwolfe91/SMU_MSDS_Homework.git
+chdir \Users\micha\SMU_MSDS_Homework
+mkdir Doing_Data_Science
+chdir \Users\micha\Doing_Data_Science
+git add .
+git commit -m "Added Unit 3 DDS Assignments"
+git push --set-upstream https://github.com/mjwolfe91/SMU_MSDS_Homework.git
