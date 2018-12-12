@@ -1,0 +1,39 @@
+---
+title: "MWolfe_Livesession5assignment"
+author: "Michael J Wolfe"
+date: "December 9, 2018"
+output: html_document
+---
+
+##Data Munging
+```{r 1, echo=TRUE}
+df <- read.table("C:/Users/micha/OneDrive/Desktop/SMU MSDS/Doing Data Science/Unit 5/yob2016.txt",sep=";")
+colnames(df) <- c("FirstName","Gender","NumberOfChildren")
+summary(df)
+str(df)
+bad_string <- grep("+yyy", df$FirstName, value=TRUE)
+print(bad_string)
+y2016 <- df[! df$FirstName==bad_string, ]
+```
+##Data Merging
+```{r 2, echo=TRUE}
+y2015 <- read.table("C:/Users/micha/OneDrive/Desktop/SMU MSDS/Doing Data Science/Unit 5/yob2015.txt",sep=",")
+colnames(y2015) <- c("FirstName","Gender","NumberOfChildren")
+tail(y2015, 10)
+##It looks like the last 10 names from 2015 are all male and all have exactly five total children sharing those names.
+final <- merge(y2016, y2015, by=c("FirstName","Gender"),na.rm=TRUE)
+```
+##Data Summary
+```{r 3, echo=TRUE}
+final$Total <- final$NumberOfChildren.x + final$NumberOfChildren.y
+##How many people had popular names in 2015 and 2016?
+sum(final$Total)
+final <- final[order(final$Total, decreasing=TRUE), ]
+##What are the top 10 most popular names?
+head(final,10)
+##What are the top 10 most popular girls' names?
+names_of_interest <- head(subset(final,final$Gender=="F"),10)
+print(names_of_interest)
+file_to_write <- names_of_interest[,c("FirstName","Total")]
+write.csv(file_to_write, "C://Users/micha/OneDrive/Desktop/SMU MSDS/Doing Data Science/Unit 5/MWolfe_Livesession5assignment.csv",row.names=FALSE)
+```
